@@ -1,35 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import quotes from "./assets/quotes.json";
+import { FaTwitter, FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface Quote {
+  quote: string;
+  author: string;
 }
 
-export default App
+const getRandomQuote = (): Quote => {
+  return quotes[Math.floor(Math.random() * quotes.length)];
+};
+
+const getRandomColor = (): string => {
+  const red = Math.floor(Math.random() * 128);
+  const green = Math.floor(Math.random() * 128);
+  const blue = Math.floor(Math.random() * 128);
+
+  return `rgb(${red}, ${green}, ${blue})`;
+};
+
+const transition = "all 1s";
+
+function App() {
+  const [quote, setQuote] = useState<Quote>(getRandomQuote());
+  const [randomColor, setRandomColor] = useState<string>(getRandomColor());
+
+  const changeQuote = () => {
+    setQuote(getRandomQuote());
+    setRandomColor(getRandomColor());
+  };
+
+  return (
+    <div
+      className="background"
+      style={{ backgroundColor: randomColor, transition }}
+    >
+      <div id="quote-box">
+        <div
+          className="quote-content"
+          style={{ color: randomColor, transition }}
+        >
+          <h2 id="text">
+            <FaQuoteLeft size="30" style={{ marginRight: "10px" }} />
+            {quote.quote}
+            <FaQuoteRight size="30" style={{ marginRight: "10px" }} />
+          </h2>
+          <h4 id="author">- {quote.author}</h4>
+        </div>
+
+        <div className="buttons">
+          <a
+            href={`https://twitter.com/intent/tweet?hashtags=quotes&related=freecodecamp&text=${quote.quote}`}
+            id="tweet-quote"
+            style={{
+              backgroundColor: randomColor,
+              marginRight: "10px",
+            }}
+          >
+            <FaTwitter className="twitter-icon" color="white" />
+          </a>
+          <button
+            id="new-quote"
+            onClick={changeQuote}
+            style={{ backgroundColor: randomColor, transition }}
+          >
+            Change Quote
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
